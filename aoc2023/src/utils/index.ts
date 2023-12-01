@@ -30,7 +30,26 @@
  *
  */
 
+
+/**
+ * GENERAL UTILS
+ */
+
 export const splitByLine = (str: string): string[] => str.split(/\r?\n/);
+
+export const reverseString = (str: string): string => {
+    return str.split("").reverse().join("");
+};
+
+export const sumOfArray = (numArray: number[]): number => {
+    return numArray.reduce((accumulator, currentValue) => {
+        return accumulator + currentValue
+      }, 0);
+};
+
+/**
+ * DAY 01 UTILS
+ */
 
 export  const findFirstDigitOrReturn0 = (str: string): string => {
     const regexDigitMatch = str.match(/[0-9]/);
@@ -38,18 +57,9 @@ export  const findFirstDigitOrReturn0 = (str: string): string => {
     return digit;
 };
 
-export const reverseString = (str: string): string => {
-    return str.split("").reverse().join("");
-};
 
 export const findLastDigitOrReturn0 = (str: string): string => {
     return findFirstDigitOrReturn0(reverseString(str));
-};
-
-export const sumOfArray = (numArray: number[]): number => {
-    return numArray.reduce((accumulator, currentValue) => {
-        return accumulator + currentValue
-      }, 0);
 };
 
 export const digitMapping = {
