@@ -47,6 +47,13 @@ export const sumOfArray = (numArray: number[]): number => {
       }, 0);
 };
 
+export const splitBySemiColon = (str: string): string[] => str.split(/;/);
+
+// For documentation / reference: 
+// const sumOfIDs = inputData.reduce( ( sum , obj ) => obj.isPossible ? sum + obj.ID : sum , 0);
+// const sumOfPowers = inputData.reduce( ( sum , obj ) => sum + obj.powerOfSet , 0);
+
+
 /**
  * DAY 01 UTILS
  */
@@ -108,3 +115,31 @@ export const reversedRealDigitToStrDigit = (str: string): string => {
     const isDigitWrittenOut = str in reversedDigitMapping;
     return isDigitWrittenOut ? reversedDigitMapping[str] : str;
 };
+
+/**
+ * DAY 02 UTILS
+ */
+
+export  const findGameID = (str: string): number => {
+    const regexGameIDMatch = str.match(/Game ([0-9]+)/);
+    const ID = regexGameIDMatch ? Number(regexGameIDMatch[1]) : 0;
+    return ID;
+};
+
+export const findGreenCount = (str: string): number => {
+    const regexGreenCount = str.match(/([0-9]+) green/)
+    const greenCount = regexGreenCount ? Number(regexGreenCount[1]) : 0;
+    return greenCount;
+}
+
+export const findBlueCount = (str: string): number => {
+    const regexBlueCount = str.match(/([0-9]+) blue/)
+    const blueCount = regexBlueCount ? Number(regexBlueCount[1]) : 0;
+    return blueCount;
+}
+
+export const findRedCount = (str: string): number => {
+    const regexRedCount = str.match(/([0-9]+) red/)
+    const redCount = regexRedCount ? Number(regexRedCount[1]) : 0;
+    return redCount;
+}
