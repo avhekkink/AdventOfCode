@@ -4,6 +4,7 @@ import {
     reverseString, 
     sumOfArray, 
     splitBySemiColon, 
+    splitInputIntoGrid,
     findFirstDigitOrReturn0, 
     findLastDigitOrReturn0, 
     findFirstRealDigitOrReturn0, 
@@ -14,7 +15,13 @@ import {
     findGreenCount, 
     findBlueCount, 
     findRedCount, 
-    doesStrIncludeSpecialSymbol 
+    doesStrIncludeSpecialSymbol,
+    findAllNumbersInStr,
+    findAllNumbersAndStoreIndices,
+    getSurroundingBoxFromGrid,
+    findAllStarsAndStoreIndices,
+    getBoxSurroundingStarFromGrid,
+    isNumber,
 } from '../utils/index.ts';
 
 /**
@@ -45,6 +52,41 @@ test('sumOfArray', () => {
 test('splitBySemiColon', () => {
     const result = splitBySemiColon('Hello;World');
     expect(result).toEqual(['Hello', 'World']);
+});
+
+test('splitInputIntoGrid', () => {
+    const input = `.32.
+..$.
+£..2
+.*..`;
+    const result = splitInputIntoGrid(input);
+    const expectedResult = [['.','3','2','.'],['.','.','$','.'],['£','.','.','2'],['.','*','.','.']];
+    expect(result).toEqual(expectedResult);
+});
+
+test('readInputFromGrid', () => {
+    const input = `.32.
+..$.
+£..2
+.*..`;
+    const grid = splitInputIntoGrid(input);
+    const result = grid[1][2];
+    expect(result).toEqual('$');
+});
+
+test('isNumber', () => {
+    const result = isNumber('8');
+    expect(result).toEqual(true);
+});
+
+test('isNumber', () => {
+    const result = isNumber('0');
+    expect(result).toEqual(true);
+});
+
+test('isNumber', () => {
+    const result = isNumber('&');
+    expect(result).toEqual(false);
 });
 
 /**
@@ -142,4 +184,72 @@ test('doesStrIncludeSpecialSymbol', () => {
 test('doesStrIncludeSpecialSymbol', () => {
     const result = doesStrIncludeSpecialSymbol('...$...32..');
     expect(result).toBe(true);
+});
+
+test('findAllNumbersInStr', () => {
+    const result = findAllNumbersInStr('...32....45%...$..3...');
+    expect(result).toEqual(['32', '45', '3']);
+});
+
+test('findAllNumbersInStr', () => {
+    const result = findAllNumbersInStr(`...32....45%...$..3...
+...532....&...5..
+........56766..$..32£21...`);
+    expect(result).toEqual(['32', '45', '3', '532', '5', '56766', '32', '21']);
+});
+
+test('findAllNumbersInStr', () => {
+    const result = findAllNumbersInStr('...%...$.....');
+    expect(result).toEqual([]);
+});
+
+test('findAllNumbersAndStoreIndices', () => {
+    const input = '.45.%..6.'
+    const lineIndex = 2;
+    const result = findAllNumbersAndStoreIndices(input, lineIndex);
+    const expectedResult = [{number: '45', startIndex: 1, endIndex: 2, lineIndex: 2}, {number: '6', startIndex: 7, endIndex: 7, lineIndex: 2}];
+    expect(result).toEqual(expectedResult);
+});
+
+test('findAllStarsAndStoreIndices', () => {
+    const input = '.*45.*..6.'
+    const lineIndex = 2;
+    const result = findAllStarsAndStoreIndices(input, lineIndex);
+    const expectedResult = [{startIndex: 1, lineIndex: 2}, {startIndex: 5, lineIndex: 2},];
+    expect(result).toEqual(expectedResult);
+});
+
+test('getSurroundingBoxFromGrid', () => {
+    const inputGrid = [['.','.','$','.'],['.','3','2','.'],['£','.','.','2'],['.','*','.','.']];
+    const inputNumberObj = {number: 32, startIndex: 1, endIndex: 2, lineIndex: 1};
+    const result = getSurroundingBoxFromGrid(inputNumberObj, inputGrid);
+    expect(result).toBe('..$..32.£..2');
+});
+
+test('getSurroundingBoxFromGrid', () => {
+    const inputGrid = [['.','3','2','.'],['.','.','$','.'],['£','.','.','2'],['.','*','.','.']];
+    const inputNumberObj = {number: 32, startIndex: 1, endIndex: 2, lineIndex: 0};
+    const result = getSurroundingBoxFromGrid(inputNumberObj, inputGrid);
+    expect(result).toBe('.32...$.');
+});
+
+test('getSurroundingBoxFromGrid', () => {
+    const inputGrid = [['.','.','$','.'],['£','.','.','2'],['.','*','.','.'],['3','2','.', '.']];
+    const inputNumberObj = {number: 32, startIndex: 0, endIndex: 1, lineIndex: 3};
+    const result = getSurroundingBoxFromGrid(inputNumberObj, inputGrid);
+    expect(result).toBe('.*.32.');
+});
+
+test('getBoxSurroundingStarFromGrid', () => {
+    const inputGrid = [['3','2','.','.','.'],['.','.','*','.','2'],['.','.','7','.','.']];
+    const inputStarObj = {startIndex: 2, lineIndex: 1};
+    const result = getBoxSurroundingStarFromGrid(inputStarObj, inputGrid);
+    expect(result).toBe('32..;.*.;.7.');
+});
+
+test('getBoxSurroundingStarFromGrid', () => {
+    const inputGrid = [['.','.','4','0','2'],['.','*','.','.','2'],['.','.','7','.','.']];
+    const inputStarObj = {startIndex: 1, lineIndex: 1};
+    const result = getBoxSurroundingStarFromGrid(inputStarObj, inputGrid);
+    expect(result).toBe('..402;.*.;..7.');
 });

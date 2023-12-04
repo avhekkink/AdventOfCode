@@ -49,6 +49,15 @@ export const sumOfArray = (numArray: number[]): number => {
 
 export const splitBySemiColon = (str: string): string[] => str.split(/;/);
 
+export const splitInputIntoGrid = (str: string): string[][] => {
+    return splitByLine(str).map(arr => arr.split(''));
+}
+
+export const isNumber = (str: string): boolean => {
+    const regexNum = str.match(/([0-9])/);
+    return regexNum ? true : false;
+}
+
 // For documentation / reference: 
 // const sumOfIDs = inputData.reduce( ( sum , obj ) => obj.isPossible ? sum + obj.ID : sum , 0);
 // const sumOfPowers = inputData.reduce( ( sum , obj ) => sum + obj.powerOfSet , 0);
@@ -152,4 +161,160 @@ export const doesStrIncludeSpecialSymbol = (str: string): boolean => {
     const regexSymbol = str.match(/([^0-9|a-z|A-Z|.|\r|\n]+)/);
     const bool = regexSymbol ? true : false;
     return bool;
+}
+
+export const findAllNumbersInStr = (str: string): string[] => {
+    const regexNumbers = str.match(/([0-9]+)/g);
+    return regexNumbers ? regexNumbers : [];
+}
+
+export type GridNumber = {number: string, startIndex: number, endIndex: number, lineIndex: number};
+export type NumbersArray = GridNumber[];
+export type GridStar = {startIndex: number, lineIndex: number};
+export type StarArray = GridStar[];
+
+export const findAllNumbersAndStoreIndices = (str: string, lineIndex: number): NumbersArray => {
+    const regexNumbers = /([0-9]+)/g;
+    let regexArray;
+    let lineNumbersArray: NumbersArray = [];
+
+    while ((regexArray = regexNumbers.exec(str)) !== null) {
+    lineNumbersArray.push({number: regexArray[0], startIndex: regexArray.index, endIndex: regexNumbers.lastIndex - 1, lineIndex: lineIndex});
+    }
+    return lineNumbersArray;
+}
+
+export const findAllStarsAndStoreIndices = (str: string, lineIndex: number): StarArray => {
+    const regexStar = /(\*)/g;
+    let regexArray;
+    let lineStarArray: StarArray = [];
+
+    while ((regexArray = regexStar.exec(str)) !== null) {
+    lineStarArray.push({startIndex: regexArray.index, lineIndex: lineIndex});
+    }
+    return lineStarArray;
+};
+
+export const getSurroundingBoxFromGrid = (numberObj: GridNumber, inputGrid: string[][]): string => {
+    // Return the characters above, adjacent, and below the number provided, and concatenate into a string
+    // Take into account when the number appears on the edge of the grid
+    const numberOfLines = inputGrid.length;
+    const lengthOfLine = inputGrid[0].length;
+
+    const startSlice = (numberObj.startIndex == 0) ? 0 : numberObj.startIndex - 1;
+    const endSlice = (numberObj.endIndex == lengthOfLine - 1) ? lengthOfLine : numberObj.endIndex + 2;
+
+
+    const topLine = (numberObj.lineIndex == 0) ? [''] : inputGrid[numberObj.lineIndex - 1].slice(startSlice, endSlice);
+
+    const middleLine = inputGrid[numberObj.lineIndex].slice(startSlice, endSlice);
+
+    const bottomLine = (numberObj.lineIndex == (numberOfLines - 1)) ? [''] : inputGrid[numberObj.lineIndex + 1].slice(startSlice, endSlice);
+
+    const concatStr = `${topLine.join('')}${middleLine.join('')}${bottomLine.join('')}`
+
+    return concatStr;
+};
+
+export const getBoxSurroundingStarFromGrid = (starObj: GridStar, inputGrid: string[][]): string => {
+    // Return the characters above, adjacent, and below the star provided, and concatenate into a string
+    // Take into account when the number appears on the edge of the grid, and don't cut it off
+    const numberOfLines = inputGrid.length;
+    const lengthOfLine = inputGrid[0].length;
+
+    const topIndex = starObj.lineIndex - 1;
+    const midIndex = starObj.lineIndex;
+    const bottomIndex = starObj.lineIndex + 1;
+
+    // if at start, no need to get previous
+    const startSlice = (starObj.startIndex == 0) ? 0 : starObj.startIndex - 1;
+    // if at end, no need to get next
+    const endSlice = (starObj.startIndex == lengthOfLine - 1) ? lengthOfLine : starObj.startIndex + 2;
+
+    // if star is on top line, return empty string for the line above it
+    const topLine = (midIndex == 0) ? [''] : inputGrid[topIndex].slice(startSlice, endSlice);
+
+    const middleLine = inputGrid[midIndex].slice(startSlice, endSlice);
+
+    // if star is on bottom line, return empty string for the line below it
+    const bottomLine = (midIndex == (numberOfLines - 1)) ? [''] : inputGrid[bottomIndex].slice(startSlice, endSlice);
+
+    // if start or end of the top line is a number, keeping extending it until we have the full number
+    let startTopSlice = startSlice;
+    let endTopSlice = endSlice;
+    let extendedTopLine = topLine;
+    while (isNumber(extendedTopLine[0])) {
+        if (startTopSlice > 0) {
+            extendedTopLine.unshift(inputGrid[topIndex][startTopSlice-1]);
+            startTopSlice -= 1;
+        } else {
+            break;
+        }
+    }
+    while (isNumber(extendedTopLine[extendedTopLine.length - 1])) {
+        if (endTopSlice < lengthOfLine) {
+            extendedTopLine.push(inputGrid[topIndex][endTopSlice]);
+            endTopSlice += 1;
+        } else {
+            break;
+        }
+    }
+
+    // if start or end of the middle line is a number, keeping extending it until we have the full number
+    let startMidSlice = startSlice;
+    let endMidSlice = endSlice;
+    let extendedMidLine = middleLine;
+    while (isNumber(extendedMidLine[0])) {
+        if (startMidSlice > 0) {
+            extendedMidLine.unshift(inputGrid[midIndex][startMidSlice-1]);
+            startMidSlice -= 1;
+        } else {
+            break;
+        }
+    }
+    while (isNumber(extendedMidLine[extendedMidLine.length - 1])) {
+        if (endMidSlice < lengthOfLine) {
+            extendedMidLine.push(inputGrid[midIndex][endMidSlice]);
+            endMidSlice += 1;
+        } else {
+            break;
+        }
+    }
+
+    // if start or end of the bottom line is a number, keeping extending it until we have the full number
+    let startBottomSlice = startSlice;
+    let endBottomSlice = endSlice;
+    let extendedBottomLine = bottomLine;
+    while (isNumber(extendedBottomLine[0])) {
+        if (startBottomSlice > 0) {
+            extendedBottomLine.unshift(inputGrid[bottomIndex][startBottomSlice - 1]);
+            startBottomSlice -= 1;
+        } else {
+            break;
+        }
+    }
+    while (isNumber(extendedBottomLine[extendedBottomLine.length - 1])) {
+        if (endBottomSlice < lengthOfLine) {
+            extendedBottomLine.push(inputGrid[bottomIndex][endBottomSlice]);
+            endBottomSlice += 1;
+        } else {
+            break;
+        }
+    }
+
+    // concatenate the top, middle and bottom lines of the box separated by a semi-colon to use to search for whole numbers within it
+    const concatStr = `${extendedTopLine.join('')};${extendedMidLine.join('')};${extendedBottomLine.join('')}`
+
+    return concatStr;
+};
+
+export const getGearRatio = (boxStr: string): number => {
+    // check adjacent characters to see if star is a gear
+    const adjacentNumbers = findAllNumbersInStr(boxStr);
+    const isGear = (adjacentNumbers.length == 2);
+    
+    // if star is a gear, return gear ratio, else return 0
+    const gearRatio = isGear ? (Number(adjacentNumbers[0]) * Number(adjacentNumbers[1])) : 0;
+
+    return gearRatio;
 }
