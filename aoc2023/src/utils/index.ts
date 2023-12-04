@@ -35,7 +35,7 @@
  * GENERAL UTILS
  */
 
-export const splitByLine = (str: string): string[] => str.split(/\r?\n/);
+export const splitByLine = (str: string): string[] => str.split(/\r|\n/);
 
 export const reverseString = (str: string): string => {
     return str.split("").reverse().join("");
@@ -142,4 +142,14 @@ export const findRedCount = (str: string): number => {
     const regexRedCount = str.match(/([0-9]+) red/)
     const redCount = regexRedCount ? Number(regexRedCount[1]) : 0;
     return redCount;
+}
+
+/**
+ * DAY 03 UTILS
+ */
+
+export const doesStrIncludeSpecialSymbol = (str: string): boolean => {
+    const regexSymbol = str.match(/([^0-9|a-z|A-Z|.|\r|\n]+)/);
+    const bool = regexSymbol ? true : false;
+    return bool;
 }
