@@ -22,6 +22,9 @@ import {
     findAllStarsAndStoreIndices,
     getBoxSurroundingStarFromGrid,
     isNumber,
+    findGoldenNumbers,
+    findCardNumbers,
+    findCardID,
 } from '../utils/index.ts';
 
 /**
@@ -253,3 +256,22 @@ test('getBoxSurroundingStarFromGrid', () => {
     const result = getBoxSurroundingStarFromGrid(inputStarObj, inputGrid);
     expect(result).toBe('..402;.*.;..7.');
 });
+
+test('findCardID', () => {
+    const input = 'Card   2: 25 43 15 31 45 19 36 73 34 85 | 92 11 85 68 74 20 19 71  1 36 43 32 77 33 14 31 73 15 45 83 34 25  6 88 57';
+    const expectedOutput = 2
+    expect(findCardID(input)).toEqual(expectedOutput);
+})
+
+test('findGoldenNumbers', () => {
+    const input = 'Card   2: 25 43 15 31 45 19 36 73 34 85 | 92 11 85 68 74 20 19 71  1 36 43 32 77 33 14 31 73 15 45 83 34 25  6 88 57';
+    const expectedOutput = ['25', '43', '15', '31', '45', '19', '36', '73', '34', '85'];
+    expect(findGoldenNumbers(input)).toEqual(expectedOutput);
+});
+
+test('findCardNumbers', () => {
+    const input = "Card   1: 41 48 83 86 17 | 83 86  6 31 17  9 48 53"
+    const expectedOutput = ["83", "86", "6", "31", "17", "9", "48", "53"]
+    const result = findCardNumbers(input);
+    expect(result).toEqual(expectedOutput)
+  })

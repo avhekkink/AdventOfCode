@@ -318,3 +318,27 @@ export const getGearRatio = (boxStr: string): number => {
 
     return gearRatio;
 }
+
+/**
+ * DAY 04 UTILS
+ */
+
+export  const findCardID = (str: string): number => {
+    const regexCardIDMatch = str.match(/Card +([0-9]+)/);
+    const ID = regexCardIDMatch ? Number(regexCardIDMatch[1]) : 0;
+    return ID;
+};
+
+export  const findGoldenNumbers = (str: string): string[] => {
+    const regexNumbers = str.match(/: (.*) \|/);
+    const numbersStr = regexNumbers[1];
+    const numArray = numbersStr?.split(/ +/)
+    return numArray;
+};
+
+export  const findCardNumbers = (str: string): string[] => {
+    const regexNumbers = str.match(/\| (.*)/);
+    const numbersStr = regexNumbers[1];
+    const numArray = numbersStr?.split(/ +/);
+    return numArray;
+};
