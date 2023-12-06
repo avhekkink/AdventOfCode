@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest'
+import { expect, test, describe, it } from 'vitest'
 import { 
     splitByLine, 
     reverseString, 
@@ -25,6 +25,14 @@ import {
     findGoldenNumbers,
     findCardNumbers,
     findCardID,
+    isInRange,
+    mappedValue,
+    calculateDestinationValue,
+    findSeedNumbers,
+    getAttributeMapping,
+    curriedMapFunction,
+    getSeedNumbersFromSeedInput,
+    getSeedNumberArraysFromSeedInput,
 } from '../utils/index.ts';
 
 /**
@@ -257,6 +265,10 @@ test('getBoxSurroundingStarFromGrid', () => {
     expect(result).toBe('..402;.*.;..7.');
 });
 
+/*
+* DAY 04 UTILS
+*/
+
 test('findCardID', () => {
     const input = 'Card   2: 25 43 15 31 45 19 36 73 34 85 | 92 11 85 68 74 20 19 71  1 36 43 32 77 33 14 31 73 15 45 83 34 25  6 88 57';
     const expectedOutput = 2
@@ -275,3 +287,110 @@ test('findCardNumbers', () => {
     const result = findCardNumbers(input);
     expect(result).toEqual(expectedOutput)
   })
+
+ /**
+ * DAY 05 UTILS
+ */
+
+describe('Day 05 Utility Functions', () => {
+  describe('isInRange', () => {
+    it('should return true if value is within the range', () => {
+        const inputValueAndSourceRange = [5, 1, 5]
+      expect(isInRange(...inputValueAndSourceRange)).toBe(true);
+    });
+
+    it('should return false if value is outside the range', () => {
+        const inputValueAndSourceRange = [0, 1, 5]
+      expect(isInRange(...inputValueAndSourceRange)).toBe(false);
+    });
+  });
+
+  describe('mappedValue', () => {
+    it('should return the correct mapped value', () => {
+        const inputValueAndMapping = [5, 10, 1]
+        expect(mappedValue(...inputValueAndMapping)).toBe(14);
+    });
+  });
+
+  describe('calculateDestinationValue', () => {
+    const inputMap = [
+      { destinationStart: 50, sourceStart: 98, length: 2 },
+      { destinationStart: 52, sourceStart: 50, length: 48 }
+    ];
+
+    it('should return the correct destination number for a given value', () => {
+      expect(calculateDestinationValue(inputMap, 98)).toBe(50);
+    });
+
+    it('should return the correct destination number for a given value within the given ranges', () => {
+        expect(calculateDestinationValue(inputMap, 60)).toBe(62);
+    });
+
+    it('should return the value number itself if it is not in the map', () => {
+      expect(calculateDestinationValue(inputMap, 10)).toBe(10);
+    });
+
+    it('should return the correct destination number for a given value when the function is curried', () => {
+        expect(curriedMapFunction(inputMap)(98)).toBe(50);
+    });
+  });
+
+  describe('findSeedNumbers', () => {
+    it('should extract seed numbers from the input string', () => {
+      const input = `seeds: 3416930225 56865175 4245248379
+
+seed-to-soil map:
+3534435790 4123267198 50004089
+3584439879 3602712894 238659237`;
+
+      const expectedOutput = [3416930225, 56865175, 4245248379];
+      expect(findSeedNumbers(input)).toEqual(expectedOutput);
+    });
+  });
+
+  describe('getAttributeMapping', () => {
+    it('should extract seed-to-soil map from the input string', () => {
+      const input = `seeds: 3416930225 56865175 4245248379
+
+seed-to-soil map:
+3534435790 4123267198 50004089
+3584439879 3602712894 238659237
+
+soil-to-fertilizer map:
+1 2 3
+4 5 6`;
+
+      const mapTitle = "seed-to-soil map";
+      const expectedOutput = [
+        { destinationStart: 3534435790, sourceStart: 4123267198, length: 50004089 },
+        { destinationStart: 3584439879, sourceStart: 3602712894, length: 238659237 }
+      ];
+      expect(getAttributeMapping(mapTitle, input)).toEqual(expectedOutput);
+    });
+
+    it('should extract soil-to-fertilizer map from the input string', () => {
+      const input = `seeds: 3416930225 56865175 4245248379
+
+seed-to-soil map:
+3534435790 4123267198 50004089
+3584439879 3602712894 238659237
+
+soil-to-fertilizer map:
+1 2 3
+4 5 6
+`;
+
+      const mapTitle = "soil-to-fertilizer map";
+      const expectedOutput = [{destinationStart: 1, sourceStart: 2, length: 3}, {destinationStart: 4, sourceStart: 5, length: 6}];
+      expect(getAttributeMapping(mapTitle, input)).toEqual(expectedOutput);
+    });
+  });
+
+  describe('getSeedNumberArraysFromSeedInput', () => {
+    it('should return the correct seed numbers from the seed input, split into an array for each pair', () => {
+        const seedInput = [1, 3, 10, 2];
+        const expectedOutput = [[1, 2, 3],[10, 11]];
+        expect(getSeedNumberArraysFromSeedInput(seedInput)).toEqual(expectedOutput);
+    });
+  });
+});

@@ -1,3 +1,5 @@
+import _ from 'lodash'
+
 /**
  * Root for your util libraries.
  *
@@ -342,3 +344,67 @@ export  const findCardNumbers = (str: string): string[] => {
     const numArray = numbersStr?.split(/ +/);
     return numArray;
 };
+
+/**
+ * DAY 05 UTILS
+*/
+export type AttributeMap = {destinationStart: number, sourceStart: number, length: number}[]
+
+export const findSeedNumbers = (str: string): number[] => {
+    const regexSeeds = str.match(/seeds: (.*)/);
+    const numbersStr = regexSeeds[1];
+    const seedArray = numbersStr?.split(/ +/).map(numStr => Number(numStr));
+    return seedArray;
+};
+
+export const getAttributeMapping = (mapTitle: string, inputStr: string): AttributeMap => {
+    const regexMapBlock  = inputStr.match(new RegExp(`(${mapTitle}:)(\b|\n)(([0-9]+ *)+\n)+`));
+    const mapBlockStr = regexMapBlock[0];
+    const mapBlockLines = splitByLine(mapBlockStr);
+    const mapLines = mapBlockLines.slice(1).filter(line => line.length != 0);
+    
+    const mapObj = mapLines.map(range => {
+        const rangeArray = findAllNumbersInStr(range);
+        return ({
+            destinationStart: Number(rangeArray[0]),
+            sourceStart: Number(rangeArray[1]),
+            length: Number(rangeArray[2]),
+        });
+    });
+    return mapObj;
+};
+
+export const isInRange = (value: number, sourceStart: number, rangeLength: number): boolean => (value >= sourceStart && value < sourceStart + rangeLength);
+export const mappedValue = (value: number, destinationStart: number, sourceStart: number): number => value + (destinationStart - sourceStart)
+
+export const calculateDestinationValue = (map: AttributeMap, value: number): number => {  
+    // Iterate over the map to find the corresponding value and calculate destination number
+    for (const range of map) {
+        if (isInRange(value, range.sourceStart, range.length)) {
+            const destinationValue = mappedValue(value, range.destinationStart, range.sourceStart);
+            return destinationValue;
+        }
+    }
+    // If the value is not in map, return value as it is
+    const destinationValue = value;
+    
+    return destinationValue;
+};
+
+export const curriedMapFunction = _.curry(calculateDestinationValue);
+
+export const getSeedNumberArraysFromSeedInput = (seedInput: number[]): number[][] => {
+    const seedNumberArrays: number[][] = [];
+  
+    for (let i = 0; i < seedInput.length; i += 2) {
+      const seedNumbers: number[] = [];
+      const start = seedInput[i];
+      const length = seedInput[i + 1];
+      for (let j = 0; j < length; j++) {
+        seedNumbers.push(start + j);
+      };
+      seedNumberArrays.push(seedNumbers);
+    }
+  
+    return seedNumberArrays;
+  }
