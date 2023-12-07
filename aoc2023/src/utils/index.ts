@@ -49,6 +49,12 @@ export const sumOfArray = (numArray: number[]): number => {
       }, 0);
 };
 
+export const productOfArray = (numArray: number[]): number => {
+    return numArray.reduce((accumulator, currentValue) => {
+        return accumulator * currentValue
+      }, 1);
+};
+
 export const splitBySemiColon = (str: string): string[] => str.split(/;/);
 
 export const splitInputIntoGrid = (str: string): string[][] => {
@@ -348,6 +354,7 @@ export  const findCardNumbers = (str: string): string[] => {
 /**
  * DAY 05 UTILS
 */
+
 export type AttributeMap = {destinationStart: number, sourceStart: number, length: number}[]
 
 export const findSeedNumbers = (str: string): number[] => {
@@ -407,4 +414,21 @@ export const getSeedNumberArraysFromSeedInput = (seedInput: number[]): number[][
     }
   
     return seedNumberArrays;
-  }
+};
+
+/**
+ * DAY 06 UTILS
+*/
+
+export const findPossibleCombinations = (t_total: number): [t_0: number, t_1: number][] => {
+    const combinationArray = [];
+    for (let t_0 = 0; t_0 <= t_total; t_0 ++) {
+        const t_1 = t_total - t_0;
+        combinationArray.push([t_0, t_1]);
+    };
+    return combinationArray;
+};
+
+export const calculateDistanceTravelled = (a: number, v_0: number, t_0: number, t_1: number): number => {
+    return t_1 * (v_0 + (a * t_0));
+};

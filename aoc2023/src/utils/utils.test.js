@@ -31,8 +31,10 @@ import {
     findSeedNumbers,
     getAttributeMapping,
     curriedMapFunction,
-    getSeedNumbersFromSeedInput,
     getSeedNumberArraysFromSeedInput,
+    findPossibleCombinations,
+    calculateDistanceTravelled,
+    productOfArray,
 } from '../utils/index.ts';
 
 /**
@@ -58,6 +60,11 @@ test('reverseString', () => {
 test('sumOfArray', () => {
     const result = sumOfArray([1, 2, 3, 4, 5]);
     expect(result).toBe(15);
+});
+
+test('productOfArray', () => {
+    const result = productOfArray([1, 2, 3, 4]);
+    expect(result).toBe(24);
 });
 
 test('splitBySemiColon', () => {
@@ -393,4 +400,29 @@ soil-to-fertilizer map:
         expect(getSeedNumberArraysFromSeedInput(seedInput)).toEqual(expectedOutput);
     });
   });
+});
+
+ /**
+ * DAY 06 UTILS
+ */
+
+describe('Day 06 Utility Functions', () => {
+    describe('findPossibleCombinations', () => {
+      it('should return the total set of combinations of t_0, t_1 possible from t_total', () => {
+          const inputTTotal = 5;
+          const expectedOutput = [[0,5], [1,4], [2,3], [3,2], [4,1], [5,0]];
+          expect(findPossibleCombinations(inputTTotal)).toEqual(expectedOutput);
+      });
+    });
+
+    describe('calculateDistanceTravelled', () => {
+        it('should return the correct distance based on parameters passed in', () => {
+            const a = 1;
+            const v_0 = 0;
+            const t_0 = 3;
+            const t_1 = 4;
+            const expectedOutput = 12;
+            expect(calculateDistanceTravelled(a, v_0, t_0, t_1)).toBe(expectedOutput);
+        });
+      });
 });
