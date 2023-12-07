@@ -32,6 +32,6 @@ Implementation:
     
 Part 2:
 - Can we use the same functions? Might be a memory issue with the number of combinations.
-- Instead could find the maximum by differentiating function, and check point at which y = y_record? i.e. solve equation by hand
+- Instead could find the threshold values for when y = y_record, round up/ down to nearest integer and count the number of winning combinations i.e. solve equation by hand and calculate solution based on it
 - 
 ...
